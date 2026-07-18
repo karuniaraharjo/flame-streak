@@ -5,14 +5,16 @@ import StreakCounter from "./StreakCounter";
 import CheckinButton from "./CheckinButton";
 import MissionHistory from "./MissionHistory";
 import MilestoneToast from "./MilestoneToast";
-import { useCheckinMission, MissionData } from "@/hooks/useMissions";
+import { useCheckinMission, useDeleteMission, MissionData } from "@/hooks/useMissions";
 
 interface MissionSlideProps {
   mission: MissionData;
+  onAddMission: () => void;
 }
 
-export default function MissionSlide({ mission }: MissionSlideProps) {
+export default function MissionSlide({ mission, onAddMission }: MissionSlideProps) {
   const { mutate: checkin, isPending } = useCheckinMission();
+  const { mutate: deleteMission, isPending: isDeleting } = useDeleteMission();
   const [milestone, setMilestone] = useState<number | null>(null);
 
   const isAlive = mission.currentStreak > 0;
@@ -32,11 +34,17 @@ export default function MissionSlide({ mission }: MissionSlideProps) {
     );
   };
 
+  const handleDelete = () => {
+    if (confirm(`Apakah Anda yakin ingin menghapus misi "${mission.name}" beserta seluruh riwayatnya?`)) {
+      deleteMission(mission.id);
+    }
+  };
+
   return (
-    <div className="w-screen flex-shrink-0 flex flex-col items-center px-4 snap-center overflow-y-auto pb-20">
-      <div className="w-full max-w-md flex flex-col items-center gap-8">
+    <div className="w-screen flex-shrink-0 flex flex-col items-center px-4 snap-center snap-always overflow-y-auto pb-20">
+      <div className="w-full max-w-md flex flex-col items-center gap-6">
         {/* Mission Title */}
-        <h2 className="text-2xl font-bold text-white text-center tracking-tight bg-white/5 px-6 py-2 rounded-full backdrop-blur border border-white/10 shadow-lg mt-4">
+        <h2 className="text-4xl font-black bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent text-center tracking-tight drop-shadow-xl mt-4 mb-2">
           {mission.name}
         </h2>
 
@@ -64,6 +72,24 @@ export default function MissionSlide({ mission }: MissionSlideProps) {
 
         {/* History Calendar */}
         <MissionHistory missionId={mission.id} />
+        
+        {/* Actions Below Calendar */}
+        <div className="w-full grid grid-cols-2 gap-3 mt-4">
+          <button
+            onClick={onAddMission}
+            className="py-3 px-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+          >
+            <span className="text-xl">+</span> Buat Misi
+          </button>
+          
+          <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="py-3 px-4 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-400 rounded-xl font-medium transition-colors disabled:opacity-50"
+          >
+            {isDeleting ? "Menghapus..." : "Hapus Misi"}
+          </button>
+        </div>
       </div>
 
       <MilestoneToast milestone={milestone} onClose={() => setMilestone(null)} />

@@ -95,3 +95,19 @@ export function useCheckinMission() {
     },
   });
 }
+
+export function useDeleteMission() {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, string>({
+    mutationFn: async (missionId) => {
+      const res = await fetch(`/api/missions/${missionId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete mission");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["missions"] });
+    },
+  });
+}

@@ -100,7 +100,7 @@ export default function LandingPage() {
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-          className="group relative flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-semibold text-lg shadow-xl shadow-orange-500/5 hover:shadow-orange-500/20 hover:bg-white/10 hover:border-orange-500/30 backdrop-blur-md transition-all duration-300 cursor-pointer"
+          className="group relative flex items-center justify-center gap-4 px-10 py-5 bg-white/5 border border-white/10 text-white rounded-3xl font-bold text-xl shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/25 hover:bg-white/10 hover:border-orange-500/30 backdrop-blur-md transition-all duration-300 cursor-pointer w-full max-w-sm"
         >
           {/* Google Icon */}
           <svg width="24" height="24" viewBox="0 0 24 24">

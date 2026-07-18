@@ -63,7 +63,7 @@ export default function DashboardPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
               onClick={() => setIsAddModalOpen(true)}
-              className="mt-8 px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white rounded-2xl font-bold text-lg shadow-xl shadow-orange-500/20 hover:scale-105 transition-all"
+              className="mt-12 px-10 py-5 w-full max-w-sm bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white rounded-3xl font-bold text-xl shadow-2xl shadow-orange-500/25 hover:scale-105 hover:shadow-orange-500/40 transition-all text-center"
             >
               + Buat Misi Pertama
             </motion.button>
@@ -73,11 +73,11 @@ export default function DashboardPage() {
             {/* Scroll/Swipe Area for Missions */}
             <div className="flex-1 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar">
               {missions.map((mission) => (
-                <MissionSlide key={mission.id} mission={mission} />
+                <MissionSlide key={mission.id} mission={mission} onAddMission={() => setIsAddModalOpen(true)} />
               ))}
               
               {/* Add Mission Slide / Card */}
-              <div className="w-screen flex-shrink-0 flex items-center justify-center snap-center px-4">
+              <div className="w-screen flex-shrink-0 flex items-center justify-center snap-center snap-always px-4">
                 <button
                   onClick={() => setIsAddModalOpen(true)}
                   className="flex flex-col items-center justify-center w-full max-w-md h-64 border-2 border-dashed border-white/20 rounded-3xl hover:border-orange-500/50 hover:bg-orange-500/5 transition-colors gap-4 group"
