@@ -7,28 +7,42 @@ export default function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
+    // Show prompt automatically after 2s if they haven't dismissed it before
+    const hasDismissed = localStorage.getItem("pwa_dismissed");
+    if (!hasDismissed) {
+      setTimeout(() => setShowPrompt(true), 2000);
+    }
+    
+    // Also listen to beforeinstallprompt to save it
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      // Show prompt after a short delay so it doesn't interrupt immediate load
-      setTimeout(() => setShowPrompt(true), 2000);
     };
 
     window.addEventListener("beforeinstallprompt", handler);
-
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-    
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === "accepted") {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") {
+        setShowPrompt(false);
+        localStorage.setItem("pwa_dismissed", "true");
+      }
+      setDeferredPrompt(null);
+    } else {
+      // Fallback message if they try to install but event isn't ready
+      alert("Aplikasi ini sudah bisa diinstall dari menu pengaturan browser Anda (Add to Home Screen).");
       setShowPrompt(false);
+      localStorage.setItem("pwa_dismissed", "true");
     }
-    setDeferredPrompt(null);
+  };
+
+  const handleDismiss = () => {
+    setShowPrompt(false);
+    localStorage.setItem("pwa_dismissed", "true");
   };
 
   return (
@@ -58,7 +72,7 @@ export default function PWAInstallPrompt() {
                 Install Sekarang
               </button>
               <button
-                onClick={() => setShowPrompt(false)}
+                onClick={handleDismiss}
                 className="w-full py-4 px-6 bg-white/5 hover:bg-white/10 text-white rounded-2xl font-medium transition-colors"
               >
                 Nanti Saja

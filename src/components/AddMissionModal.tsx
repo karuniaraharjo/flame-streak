@@ -42,9 +42,9 @@ export default function AddMissionModal({ isOpen, onClose }: AddMissionModalProp
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-sm bg-zinc-900 border border-white/10 p-10 rounded-3xl shadow-2xl"
+            className="relative w-full max-w-md bg-zinc-900 border border-white/10 p-12 rounded-[2rem] shadow-2xl"
           >
-            <h2 className="text-2xl font-bold text-white mb-6 text-center">Buat Misi Baru</h2>
+            <h2 className="text-3xl font-bold text-white mb-8 text-center">Buat Misi Baru</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
               <div>
                 <label htmlFor="missionName" className="block text-sm font-medium text-zinc-400 mb-2">

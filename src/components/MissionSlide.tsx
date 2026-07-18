@@ -46,7 +46,7 @@ export default function MissionSlide({ mission, onAddMission }: MissionSlideProp
 
   return (
     <div className="w-screen flex-shrink-0 flex flex-col items-center px-4 snap-center snap-always">
-      <div className="w-full max-w-md flex flex-col items-center gap-6 pb-24 pt-4">
+      <div className="w-full max-w-md flex flex-col items-center gap-6 pb-24 my-auto min-h-screen justify-center">
         {/* Flame Animation */}
         <StreakFlame
           streak={mission.currentStreak}

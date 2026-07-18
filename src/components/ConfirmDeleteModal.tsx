@@ -31,7 +31,7 @@ export default function ConfirmDeleteModal({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-sm bg-zinc-900 border border-red-500/30 p-8 rounded-3xl shadow-2xl flex flex-col items-center text-center"
+            className="relative w-full max-w-md bg-zinc-900 border border-red-500/30 p-12 rounded-[2rem] shadow-2xl flex flex-col items-center text-center"
           >
             <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
