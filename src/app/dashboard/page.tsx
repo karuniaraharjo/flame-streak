@@ -80,7 +80,7 @@ export default function DashboardPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 flex flex-col items-center pt-24 pb-12 px-4">
+      <main className="flex-1 flex flex-col items-center pt-32 sm:pt-36 pb-12 px-4">
         <div className="w-full max-w-md flex flex-col items-center gap-8">
           {/* Flame Animation */}
           <StreakFlame
