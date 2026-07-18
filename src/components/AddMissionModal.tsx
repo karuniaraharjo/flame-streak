@@ -30,7 +30,7 @@ export default function AddMissionModal({ isOpen, onClose }: AddMissionModalProp
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -42,9 +42,9 @@ export default function AddMissionModal({ isOpen, onClose }: AddMissionModalProp
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-sm bg-zinc-900 border border-white/10 p-8 rounded-3xl shadow-2xl"
+            className="relative w-full max-w-sm bg-zinc-900 border border-white/10 p-10 rounded-3xl shadow-2xl"
           >
-            <h2 className="text-2xl font-bold text-white mb-6">Buat Misi Baru</h2>
+            <h2 className="text-2xl font-bold text-white mb-6 text-center">Buat Misi Baru</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
               <div>
                 <label htmlFor="missionName" className="block text-sm font-medium text-zinc-400 mb-2">

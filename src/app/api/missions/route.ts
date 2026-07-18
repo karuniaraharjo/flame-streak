@@ -37,8 +37,8 @@ export async function GET(request: NextRequest) {
 
       // We only return the evaluated state, we don't save to DB until they actually check in
       const checkedInToday = result.status === "already_checked_in";
-      // If the streak is dead (reset to 1 but they haven't checked in today), the actual live streak is 0
-      const currentStreakLive = result.status === "reset" ? 0 : result.streak;
+      // If the streak is dead (reset to 1) or brand new (new to 1) but they haven't checked in today, live streak is 0
+      const currentStreakLive = (result.status === "reset" || result.status === "new") ? 0 : result.streak;
 
       return {
         id: mission.id,

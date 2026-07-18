@@ -51,7 +51,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen max-h-screen overflow-hidden relative bg-black">
+    <div className="flex flex-col min-h-screen relative bg-black">
       <Navbar />
 
       <main className="flex-1 flex flex-col mt-16 relative">
