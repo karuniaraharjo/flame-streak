@@ -1,47 +1,26 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import { useStreak, useCheckin } from "@/hooks/useStreak";
 import Navbar from "@/components/Navbar";
-import StreakFlame from "@/components/StreakFlame";
-import StreakCounter from "@/components/StreakCounter";
-import CheckinButton from "@/components/CheckinButton";
-import StreakHistory from "@/components/StreakHistory";
-import EmptyState from "@/components/EmptyState";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
-import MilestoneToast from "@/components/MilestoneToast";
+import EmptyState from "@/components/EmptyState";
+import { useMissions } from "@/hooks/useMissions";
+import MissionSlide from "@/components/MissionSlide";
+import AddMissionModal from "@/components/AddMissionModal";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function DashboardPage() {
-  const { data: session, status: sessionStatus } = useSession();
-  const { data: streakData, isLoading, error } = useStreak();
-  const checkin = useCheckin();
-  const [milestone, setMilestone] = useState<number | null>(null);
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (sessionStatus === "unauthenticated") {
-      window.location.href = "/";
-    }
-  }, [sessionStatus]);
-
-  // Handle check-in
-  const handleCheckin = () => {
-    checkin.mutate(undefined, {
-      onSuccess: (data) => {
-        if (data?.isMilestone && data.milestoneDay) {
-          setMilestone(data.milestoneDay);
-        }
-      },
-    });
-  };
+  const { data: session, status } = useSession();
+  const { data: missions, isLoading, error } = useMissions();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Loading state
-  if (sessionStatus === "loading" || isLoading) {
+  if (status === "loading" || isLoading) {
     return (
       <>
         <Navbar />
-        <main className="flex-1 flex items-center justify-center pt-20 px-4">
+        <main className="flex-1 flex flex-col items-center pt-24 px-4">
           <LoadingSkeleton />
         </main>
       </>
@@ -59,7 +38,7 @@ export default function DashboardPage() {
       <>
         <Navbar />
         <main className="flex-1 flex flex-col items-center justify-center pt-20 px-4 gap-4">
-          <p className="text-red-400 text-lg">Terjadi kesalahan saat memuat data.</p>
+          <p className="text-red-400 text-lg">Terjadi kesalahan saat memuat misi Anda.</p>
           <button
             onClick={() => window.location.reload()}
             className="px-6 py-3 bg-white/10 rounded-xl hover:bg-white/15 transition-colors"
@@ -71,88 +50,60 @@ export default function DashboardPage() {
     );
   }
 
-  const currentStreak = streakData?.currentStreak ?? 0;
-  const longestStreak = streakData?.longestStreak ?? 0;
-  const checkedInToday = streakData?.checkedInToday ?? false;
-  const isAlive = currentStreak > 0;
-  const isFirstTime = longestStreak === 0 && currentStreak === 0 && !checkedInToday;
-
   return (
-    <>
+    <div className="flex flex-col min-h-screen max-h-screen overflow-hidden relative bg-black">
       <Navbar />
-      <main className="flex-1 flex flex-col items-center justify-center min-h-[calc(100vh-64px)] py-12 px-4 mt-16">
-        <div className="w-full max-w-md flex flex-col items-center gap-8">
-          {/* Flame Animation */}
-          <StreakFlame
-            streak={currentStreak}
-            isAlive={isAlive || checkedInToday}
-            checkedInToday={checkedInToday}
-          />
 
-          {/* Streak Counter or Empty State */}
-          {isFirstTime && !checkedInToday ? (
+      <main className="flex-1 flex flex-col mt-16 relative">
+        {(!missions || missions.length === 0) ? (
+          <div className="flex-1 flex flex-col items-center justify-center px-4">
             <EmptyState />
-          ) : (
-            <StreakCounter
-              currentStreak={currentStreak}
-              longestStreak={longestStreak}
-              isAlive={isAlive || checkedInToday}
-            />
-          )}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              onClick={() => setIsAddModalOpen(true)}
+              className="mt-8 px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white rounded-2xl font-bold text-lg shadow-xl shadow-orange-500/20 hover:scale-105 transition-all"
+            >
+              + Buat Misi Pertama
+            </motion.button>
+          </div>
+        ) : (
+          <>
+            {/* Scroll/Swipe Area for Missions */}
+            <div className="flex-1 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar">
+              {missions.map((mission) => (
+                <MissionSlide key={mission.id} mission={mission} />
+              ))}
+              
+              {/* Add Mission Slide / Card */}
+              <div className="w-screen flex-shrink-0 flex items-center justify-center snap-center px-4">
+                <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="flex flex-col items-center justify-center w-full max-w-md h-64 border-2 border-dashed border-white/20 rounded-3xl hover:border-orange-500/50 hover:bg-orange-500/5 transition-colors gap-4 group"
+                >
+                  <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 group-hover:bg-orange-500/20 transition-all">
+                    <span className="text-3xl text-zinc-400 group-hover:text-orange-400">+</span>
+                  </div>
+                  <span className="text-lg font-medium text-zinc-400 group-hover:text-orange-400">
+                    Tambah Misi Baru
+                  </span>
+                </button>
+              </div>
+            </div>
 
-          {/* Check-in Button */}
-          <CheckinButton
-            onCheckin={handleCheckin}
-            isCheckedIn={checkedInToday}
-            isLoading={checkin.isPending}
-            streak={currentStreak}
-          />
-
-          {/* Streak History Calendar */}
-          <StreakHistorySection />
-        </div>
+            {/* Pagination Dots (Optional UI hint) */}
+            <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 pointer-events-none">
+              {missions.map((m, i) => (
+                <div key={m.id} className="w-2 h-2 rounded-full bg-white/20" />
+              ))}
+              <div className="w-2 h-2 rounded-full bg-white/10" />
+            </div>
+          </>
+        )}
       </main>
 
-      {/* Milestone Celebration */}
-      <MilestoneToast milestone={milestone} onClose={() => setMilestone(null)} />
-    </>
+      <AddMissionModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
+    </div>
   );
-}
-
-function StreakHistorySection() {
-  const [history, setHistory] = useState<Array<{ date: string; checkedIn: boolean }>>([]);
-  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
-
-  useEffect(() => {
-    async function fetchHistory() {
-      try {
-        const res = await fetch("/api/streak/history?limit=35");
-        const json = await res.json();
-        if (json.status === "success") {
-          setHistory(json.data.history);
-        }
-      } catch (err) {
-        console.error("Failed to fetch history:", err);
-      } finally {
-        setIsLoadingHistory(false);
-      }
-    }
-    fetchHistory();
-  }, []);
-
-  if (isLoadingHistory) {
-    return (
-      <div className="w-full glass-card p-6">
-        <div className="grid grid-cols-7 gap-2">
-          {Array.from({ length: 35 }).map((_, i) => (
-            <div key={i} className="w-8 h-8 rounded-lg bg-white/5 animate-pulse" />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (history.length === 0) return null;
-
-  return <StreakHistory history={history} />;
 }

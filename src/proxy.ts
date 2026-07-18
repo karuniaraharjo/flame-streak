@@ -20,8 +20,8 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // Protect API streak routes (return 401 instead of redirect)
-  if (pathname.startsWith("/api/streak") && !hasSession) {
+  // Protect API missions routes (return 401 instead of redirect)
+  if (pathname.startsWith("/api/missions") && !hasSession) {
     return NextResponse.json(
       { status: "error", code: "UNAUTHORIZED", message: "Sesi tidak valid, silakan login ulang." },
       { status: 401 }
@@ -32,5 +32,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/api/streak/:path*"],
+  matcher: ["/dashboard/:path*", "/api/missions/:path*"],
 };

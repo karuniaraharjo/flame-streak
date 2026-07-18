@@ -25,12 +25,10 @@ export default function EmptyState() {
       </svg>
 
       <div className="flex flex-col gap-2">
-        <h2 className="text-2xl font-bold text-white/60">
-          Mulai streak pertamamu hari ini!
-        </h2>
-        <p className="text-base text-white/40 max-w-sm">
-          Tekan tombol check-in untuk memulai perjalanan konsistensimu
-        </p>
+        <h2 className="text-2xl font-bold text-white mb-2">Belum ada misi aktif!</h2>
+      <p className="text-zinc-500 max-w-[280px]">
+        Tambahkan misi pertamamu untuk mulai melacak streak konsistensi harian.
+      </p>
       </div>
     </motion.div>
   );
