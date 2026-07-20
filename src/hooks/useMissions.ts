@@ -90,8 +90,9 @@ export function useCheckinMission() {
         queryClient.setQueryData<MissionData[]>(["missions"], ctx.previous);
       }
     },
-    onSettled: () => {
+    onSettled: (_data, _error, variables) => {
       queryClient.invalidateQueries({ queryKey: ["missions"] });
+      queryClient.invalidateQueries({ queryKey: ["history", variables.missionId] });
     },
   });
 }

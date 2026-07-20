@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { calculateStreak, getTodayInTimezone } from "@/lib/streak-logic";
+import { calculateStreak, getTodayInTimezone, daysBetween, getLiveStreak } from "@/lib/streak-logic";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -36,15 +36,14 @@ export async function GET(request: NextRequest) {
       );
 
       // We only return the evaluated state, we don't save to DB until they actually check in
-      const checkedInToday = result.status === "already_checked_in";
-      // If the streak is dead (reset to 1) or brand new (new to 1) but they haven't checked in today, live streak is 0
-      const currentStreakLive = (result.status === "reset" || result.status === "new") ? 0 : result.streak;
+      const checkedInToday = mission.lastCheckinDate ? daysBetween(mission.lastCheckinDate, todayLocal) === 0 : false;
+      const currentStreakLive = getLiveStreak(mission.lastCheckinDate, mission.currentStreak, todayLocal);
 
       return {
         id: mission.id,
         name: mission.name,
         currentStreak: currentStreakLive,
-        longestStreak: result.longest,
+        longestStreak: mission.longestStreak,
         lastCheckinDate: mission.lastCheckinDate,
         checkedInToday,
       };
